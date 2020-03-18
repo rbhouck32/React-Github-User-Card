@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
 
-import './App.css';
-import UserCard from "./components/UserCard"
-import UserInput from './components/UserInput';
-
+import "./App.css";
+import UserCard from "./components/UserCard";
+import UserInput from "./components/UserInput";
+import FollowerCard from "./components/FollowerCard";
+import { Card, FollowerCardWrap, Paragraph } from "./Style";
 
 // const Dummy_Data =  {
 // 	avatar_url: "",
@@ -17,70 +18,78 @@ import UserInput from './components/UserInput';
 // 	bio: "excited to learn and grow"
 // };
 
-
-
-
 class App extends React.Component {
   state = {
-    users: [],
+    user: {},
+    followers: [],
     userSearch: ""
-  }
+  };
 
+  onSearch = user => {
+    this.setState({ ...this.state, userSearch: user });
+  };
 
-  componentDidMount() {
-    fetch("https://api.github.com/users/rbhouck32")
-    .then(res => res)
-    .then(users => {
-      this.setState({users: users.name})
-    } 
-      
-    )    
-    .catch(err => {
-       console.error(err);
-       this.setState({users: []});
-    });
-};
+  getUser = user => {
+    fetch(`https://api.github.com/users/${user}`)
+      .then(res => res.json())
+      .then(user => {
+        console.log("componentDidMount JSON res", user);
+        this.setState({ ...this.state, user: user });
+      })
+      .catch(err => {
+        console.error(err);
+        this.setState({ followers: [] });
+      });
+  };
 
-handleChanges = e => {
-  this.setState({...this.state, userSearch: e.target.value});
-};
+  // componentDidMount() {
+  //   this.getUser();
+  // }
 
-handleFetchUser = e => {
-  e.preventDefault();
-  fetch(`https://api.github.com/users/${this.state.userSearch}/followers`)
-  .then(res => res)
-  .then(users => {
-    if(users.status === "success"){
-      this.setState({users: users.name});
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.userSearch !== prevState.userSearch) {
+      this.handleFetchUser(this.state.userSearch);
+      this.getUser(this.state.userSearch);
     }
-    })
-  .catch(err => {
-    console.error(err);
-    this.setState({ users: []});
-  });
-}
-
-  
-
-  render () {
-      return (
-          <div className="App">
-            <div className="header">
-              <h1>GitHub UserCard</h1>
-              <UserInput handleChanges={this.handleChanges} handleFetchUser={this.handleFetchUser}/>
-            </div>
-            {/* {this.state.users.map(user => (
-                <UserCard user={this.userSearch} />
-              ))} */}
-              
-            
-
-          </div>
-   
-    )
   }
-  
+
+  handleFetchUser = user => {
+    fetch(`https://api.github.com/users/${user}/followers`)
+      .then(res => res.json())
+      .then(users => {
+        console.log("handleFetchUser response: ", users);
+        this.setState({ ...this.state, followers: users }, () =>
+          console.log(this.state)
+        );
+      })
+      .catch(err => {
+        console.error(err);
+        this.setState({ followers: [] });
+      });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <div className="header">
+          <h1>GitHub UserCard</h1>
+          <UserInput onSearch={this.onSearch} />
+        </div>
+        <Card>
+          {this.state.userSearch === "" ? (
+            <Paragraph>Search for a Github member!</Paragraph>
+          ) : (
+            <UserCard user={this.state.user} />
+          )}
+        </Card>
+        <FollowerCardWrap className="followerCard">
+          {this.state.followers.map(follower => (
+            <FollowerCard user={follower} key={follower.id} />
+          ))}
+        </FollowerCardWrap>
+      </div>
+    );
+  }
 }
- 
 
 export default App;
