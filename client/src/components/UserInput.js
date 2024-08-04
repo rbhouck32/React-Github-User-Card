@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-// styles for input ------------------
+////   styles for input --------------------
 
 const Input = styled.input`
   border: 1px solid #095be3;

@@ -15,14 +15,16 @@ const ImgStyle = styled.img`
 `;
 
 const FollowerCard = props => {
+  let { user } = props;
+  console.log("rh: followercard", props)
   return (
     <CardWrap>
       <ImgStyle
-        src={props.user.avatar_url}
-        alt={props.user.login}
+        src={user.avatar_url}
+        alt={user.login}
         width="100px"
       />
-      <h3>{props.user.login}</h3>
+      <h3>{user.login}</h3>
     </CardWrap>     
   );
 };

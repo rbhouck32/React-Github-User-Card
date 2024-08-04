@@ -33,7 +33,7 @@ class App extends React.Component {
     fetch(`https://api.github.com/users/${user}`)
       .then(res => res.json())
       .then(user => {
-        console.log("componentDidMount JSON res", user);
+        console.log("rh: app.js componentDidMount JSON res", user);
         this.setState({ ...this.state, user: user });
       })
       .catch(err => {
