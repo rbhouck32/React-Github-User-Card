@@ -22,21 +22,21 @@ class App extends React.Component {
   state = {
     user: {},
     followers: [],
-    userSearch: ""
+    userSearch: "",
   };
 
-  onSearch = user => {
+  onSearch = (user) => {
     this.setState({ ...this.state, userSearch: user });
   };
 
-  getUser = user => {
+  getUser = (user) => {
     fetch(`https://api.github.com/users/${user}`)
-      .then(res => res.json())
-      .then(user => {
+      .then((res) => res.json())
+      .then((user) => {
         console.log("rh: app.js componentDidMount JSON res", user);
         this.setState({ ...this.state, user: user });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         this.setState({ followers: [] });
       });
@@ -53,16 +53,16 @@ class App extends React.Component {
     }
   }
 
-  handleFetchUser = user => {
+  handleFetchUser = (user) => {
     fetch(`https://api.github.com/users/${user}/followers`)
-      .then(res => res.json())
-      .then(users => {
+      .then((res) => res.json())
+      .then((users) => {
         console.log("handleFetchUser response: ", users);
         this.setState({ ...this.state, followers: users }, () =>
           console.log(this.state)
         );
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         this.setState({ followers: [] });
       });
@@ -77,13 +77,13 @@ class App extends React.Component {
         </div>
         <Card>
           {this.state.userSearch === "" ? (
-            <Paragraph>Search for a Github member!</Paragraph>
+            <Paragraph>Search for a Github member! Cool!</Paragraph>
           ) : (
             <UserCard user={this.state.user} />
           )}
         </Card>
         <FollowerCardWrap className="followerCard">
-          {this.state.followers.map(follower => (
+          {this.state.followers.map((follower) => (
             <FollowerCard user={follower} key={follower.id} />
           ))}
         </FollowerCardWrap>
